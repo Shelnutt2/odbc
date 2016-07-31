@@ -12,7 +12,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/alexbrainman/odbc/api"
+	"github.com/Shelnutt2/odbc/api"
 )
 
 // TODO(brainman): see if I could use SQLExecDirect anywhere
@@ -36,8 +36,8 @@ func (c *Conn) PrepareODBCStmt(query string) (*ODBCStmt, error) {
 	h := api.SQLHSTMT(out)
 	drv.Stats.updateHandleCount(api.SQL_HANDLE_STMT, 1)
 
-	b := api.StringToUTF16(query)
-	ret = api.SQLPrepare(h, (*api.SQLWCHAR)(unsafe.Pointer(&b[0])), api.SQL_NTS)
+	b := []byte(query)
+	ret = api.SQLPrepare(h, (*api.SQLCHAR)(unsafe.Pointer(&b[0])), api.SQL_NTS)
 	if IsError(ret) {
 		defer releaseHandle(h)
 		return nil, c.newError("SQLPrepare", h)
