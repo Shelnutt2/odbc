@@ -26,9 +26,9 @@ func (d *Driver) Open(dsn string) (driver.Conn, error) {
 	h := api.SQLHDBC(out)
 	drv.Stats.updateHandleCount(api.SQL_HANDLE_DBC, 1)
 
-	b := api.StringToUTF16(dsn)
+	b := []byte(dsn)
 	ret = api.SQLDriverConnect(h, 0,
-		(*api.SQLWCHAR)(unsafe.Pointer(&b[0])), api.SQL_NTS,
+		(*api.SQLCHAR)(unsafe.Pointer(&b[0])), api.SQL_NTS,
 		nil, 0, nil, api.SQL_DRIVER_NOPROMPT)
 	if IsError(ret) {
 		defer releaseHandle(h)
