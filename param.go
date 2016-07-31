@@ -10,7 +10,7 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/alexbrainman/odbc/api"
+	"github.com/Shelnutt2/odbc/api"
 )
 
 type Parameter struct {
@@ -51,7 +51,7 @@ func (p *Parameter) BindValue(h api.SQLHSTMT, idx int, v driver.Value) error {
 		sqltype = api.SQL_WCHAR
 	case string:
 		ctype = api.SQL_C_WCHAR
-		b := api.StringToUTF16(d)
+		b := []byte(d)
 		p.Data = b
 		buf = unsafe.Pointer(&b[0])
 		l := len(b)

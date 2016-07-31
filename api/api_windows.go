@@ -116,6 +116,7 @@ type (
 	SQLHSTMT  SQLHANDLE
 	SQLHWND   uintptr
 
+	SQLCHAR      int8
 	SQLWCHAR     uint16
 	SQLSCHAR     int8
 	SQLSMALLINT  int16
