@@ -1,0 +1,53 @@
+language: go
+env:
+  - DB=mariadb
+  - DB=mysql
+  - DB=pgsql
+go:
+  - tip
+before_install:
+  - go get github.com/mattn/goveralls
+  - go get golang.org/x/tools/cmd/cover
+  - sudo apt-get update -q
+  - sudo apt-get install -y unixODBC unixODBC-dev
+  - sh -c "if [ '$DB' = 'mariadb' ]; then sudo apt-get install -y libmyodbc; fi"
+  - sh -c "if [ '$DB' = 'mariadb' ]; then mysql < testdata/mariadb.sql; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then sudo apt-get install -y libmyodbc; fi"
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql < testdata/mariadb.sql; fi"
+script:
+  - $HOME/gopath/bin/goveralls -service=travis-ci
+
+matrix:
+  include:
+    - go: tip
+      env: DB=mariadb
+      addons:
+        mariadb: 5.5
+    - go: tip
+      env: DB=mariadb
+      addons:
+        mariadb: 10.1
+
+    - go: tip
+      env: DB=mysql
+      services:
+        - mysql
+    - go: tip
+      env: DB=mysql
+      services:
+        - mysql
+      addons:
+        apt:
+          packages:
+          - mysql-server-5.6
+          - mysql-client-core-5.6
+          - mysql-client-5.6
+
+    - go: tip
+      env: DB=pgsql
+      services:
+        - postgresql
+    - go: tip
+      env: DB=pgsql
+      addons:
+        postgresql: "9.4"
